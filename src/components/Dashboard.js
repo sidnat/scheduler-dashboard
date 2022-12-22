@@ -26,32 +26,34 @@ const data = [
   }
 ];
 
-function Dashboard(props) {
-  const [state, setState] = React.useState({ focused: null });
+class Dashboard extends Component {
+  state = {
+    loading: false,
+    focused: null
+  };
 
   selectPanel(id) {
-    setState({
-      focused: id
-    });
+    this.setState(previousState => ({
+      focused: previousState.focused !== null ? null : id
+    }));
   }
 
   render() {
     const dashboardClasses = classnames("dashboard", {
-      "dashboard--focused": state.focused
+      "dashboard--focused": this.state.focused
     });
 
-    if (state.loading) {
+    if (this.state.loading) {
       return <Loading />;
     }
 
-    const panels = (state.focused ? data.filter(panel => state.focused === panel.id) : data)
+    const panels = (this.state.focused ? data.filter(panel => this.state.focused === panel.id) : data)
       .map(panel => (
         <Panel
           key={panel.id}
-          id={panel.id}
           label={panel.label}
           value={panel.value}
-          onSelect={selectPanel}
+          onSelect={event => this.selectPanel(panel.id)}
         />
       ));
 
